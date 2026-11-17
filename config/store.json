@@ -1,0 +1,17 @@
+{
+  "storeName": "BountyMine",
+  "tagline": "Bounties posted. Rubies ready. Pick your contract and pay your due.",
+  "currency": "USD",
+  "currencySymbol": "$",
+  "supportUrl": "https://discord.gg/Zr64tFhvMn",
+  "discordGuildId": "1562969823745544306",
+  "discordMemberFallback": 31,
+  "paymentMethods": ["card"],
+  "taxRatePercent": 0,
+  "faq": [
+    { "q": "How do I buy rubies?", "a": "Pick a ruby package below, add it to your basket, and check out with your Minecraft username. Rubies are delivered automatically." },
+    { "q": "What payment methods are available?", "a": "Card payments via Stripe." },
+    { "q": "When do I get my purchase?", "a": "Rubies are granted in-game within a minute of your payment confirming. You'll need to be online to receive them." },
+    { "q": "I have a problem with my order. What do I do?", "a": "Reach out on Discord with your order details and we'll sort it out." }
+  ]
+}

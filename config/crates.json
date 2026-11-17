@@ -1,0 +1,13 @@
+[
+  {
+    "id": "crate-supreme-key",
+    "name": "Supreme Crate Key",
+    "price": 3,
+    "command": "crate key give {player} Supreme {qty}",
+    "perks": [
+      "Loot slot 1",
+      "Loot slot 2",
+      "Loot slot 3"
+    ]
+  }
+]

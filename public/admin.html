@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BountyMine Admin</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/png" sizes="128x128" href="/img/favicon.png" />
+<link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body>
+<div class="admin-wrap">
+  <header class="admin-top">
+    <div>
+      <h1>BountyMine Admin</h1>
+      <p>Manage packages, ranks, crate keys and fulfillment commands.</p>
+    </div>
+    <button id="logoutBtn" type="button" hidden>Log out</button>
+  </header>
+
+  <section class="panel login-panel" id="loginPanel" hidden>
+    <h2>Log in</h2>
+    <form id="loginForm">
+      <label>Login
+        <input id="loginUser" name="login" type="text" autocomplete="username" required />
+      </label>
+      <label>Password
+        <input id="loginPass" name="password" type="password" autocomplete="current-password" required />
+      </label>
+      <button type="submit">Log in</button>
+      <p class="msg error" id="loginMsg" hidden></p>
+    </form>
+  </section>
+
+  <main id="dashboard" hidden>
+    <nav class="tabs" aria-label="Admin sections">
+      <button type="button" class="active" data-tab="products">Packages</button>
+      <button type="button" data-tab="ranks">Ranks</button>
+      <button type="button" data-tab="crates">Crate keys</button>
+      <button type="button" data-tab="commands">Commands</button>
+    </nav>
+
+    <section class="panel" data-panel="products">
+      <h2>Ruby packages</h2>
+      <form class="editor" id="productForm" data-type="products">
+        <input type="hidden" name="editingId" />
+        <label>Name
+          <input name="name" maxlength="80" required />
+        </label>
+        <label>Rubies
+          <input name="rubies" type="number" min="1" step="1" required />
+        </label>
+        <label>Price
+          <input name="price" type="number" min="0" step="0.01" required />
+        </label>
+        <label>Original price
+          <input name="originalPrice" type="number" min="0" step="0.01" />
+        </label>
+        <label>Badge
+          <input name="badge" maxlength="30" placeholder="Optional" />
+        </label>
+        <label>Image path
+          <input name="image" maxlength="120" placeholder="packages/size1.png" />
+        </label>
+        <div class="form-actions">
+          <button type="submit" data-submit>Add package</button>
+          <button type="button" class="secondary" data-cancel hidden>Cancel</button>
+          <span class="msg" data-msg hidden></span>
+        </div>
+      </form>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Rubies</th><th>Price</th><th>Badge</th><th>Image</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="productsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="ranks" hidden>
+      <h2>Ranks</h2>
+      <form class="editor" id="rankForm" data-type="ranks">
+        <input type="hidden" name="editingId" />
+        <label>Name
+          <input name="name" maxlength="80" required />
+        </label>
+        <label>In-game price (rubies)
+          <input name="ingamePrice" type="number" min="0" step="1" required />
+        </label>
+        <label class="wide">Perks (one per line)
+          <textarea name="perks" rows="4" placeholder="Perk slot 1&#10;Perk slot 2"></textarea>
+        </label>
+        <div class="form-actions">
+          <button type="submit" data-submit>Add rank</button>
+          <button type="button" class="secondary" data-cancel hidden>Cancel</button>
+          <span class="msg" data-msg hidden></span>
+        </div>
+      </form>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>In-game price</th><th>Perks</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="ranksBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="crates" hidden>
+      <h2>Crate keys</h2>
+      <form class="editor" id="crateForm" data-type="crates">
+        <input type="hidden" name="editingId" />
+        <label>Name
+          <input name="name" maxlength="80" required />
+        </label>
+        <label>Price
+          <input name="price" type="number" min="0" step="0.01" required />
+        </label>
+        <label class="wide">In-game command
+          <input name="command" maxlength="300" required placeholder="crate key give {player} Supreme {qty}" />
+        </label>
+        <label class="wide">Contents (one per line)
+          <textarea name="perks" rows="4" placeholder="Loot slot 1&#10;Loot slot 2"></textarea>
+        </label>
+        <div class="form-actions">
+          <button type="submit" data-submit>Add key</button>
+          <button type="button" class="secondary" data-cancel hidden>Cancel</button>
+          <span class="msg" data-msg hidden></span>
+        </div>
+      </form>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Price</th><th>Command</th><th>Contents</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="cratesBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="commands" hidden>
+      <h2>Commands</h2>
+      <p class="hint">
+        Ruby packages use this command after payment. Placeholders: <code>{player}</code>,
+        <code>{amount}</code> (total rubies) or <code>{rubies}</code>.
+      </p>
+      <form class="editor" id="commandsForm">
+        <label class="wide">Ruby grant command
+          <input name="rubies" maxlength="300" required />
+        </label>
+        <div class="form-actions">
+          <button type="submit">Save command</button>
+          <span class="msg" data-msg hidden></span>
+        </div>
+      </form>
+      <p class="hint">
+        Crate key commands use <code>{player}</code>, <code>{qty}</code>, <code>{name}</code>,
+        and <code>{id}</code>. Edit the command on each key above.
+      </p>
+    </section>
+  </main>
+</div>
+<script src="/js/admin.js" defer></script>
+</body>
+</html>

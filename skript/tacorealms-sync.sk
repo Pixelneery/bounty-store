@@ -1,0 +1,39 @@
+import:
+	java.net.URL
+	java.net.HttpURLConnection
+	java.io.BufferedReader
+	java.io.InputStreamReader
+
+function tacorealms_base_url() :: text:
+	return "https://store.tacogenzz.com"
+
+function tacorealms_http_get(u: text) :: text:
+	set {_result} to ""
+	set {_urlObj} to new URL({_u})
+	set {_conn} to {_urlObj}.openConnection()
+	{_conn}.setRequestMethod("GET")
+	{_conn}.setConnectTimeout(5000)
+	{_conn}.setReadTimeout(5000)
+	set {_stream} to {_conn}.getInputStream()
+	set {_isr} to new InputStreamReader({_stream})
+	set {_reader} to new BufferedReader({_isr})
+	set {_line} to {_reader}.readLine()
+	while {_line} is set:
+		set {_result} to "%{_result}%%{_line}%"
+		set {_line} to {_reader}.readLine()
+	{_reader}.close()
+	return {_result}
+
+every 60 seconds:
+	set {_lbRaw} to tacorealms_http_get("%tacorealms_base_url()%/api/mc/leaderboard")
+	if {_lbRaw} is set:
+		delete {tacorealms::leaderboard::*}
+		set {_lines::*} to {_lbRaw} split at "regex:\n"
+		set {_i} to 0
+		loop {_lines::*}:
+			add 1 to {_i}
+			set {_row::*} to loop-value split at "|"
+			set {tacorealms::leaderboard::%{_i}%::name} to {_row::1}
+			set {tacorealms::leaderboard::%{_i}%::total} to {_row::2}
+	else:
+		broadcast "&c[TacoRealms Sync] Failed to fetch leaderboard data." to console

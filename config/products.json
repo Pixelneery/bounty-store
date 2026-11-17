@@ -1,0 +1,56 @@
+[
+  {
+    "id": "pkg-600",
+    "name": "600 Rubies",
+    "rubies": 600,
+    "price": 6,
+    "originalPrice": null,
+    "badge": null,
+    "image": "packages/size1.png"
+  },
+  {
+    "id": "pkg-1200",
+    "name": "1200 Rubies",
+    "rubies": 1200,
+    "price": 12.5,
+    "originalPrice": null,
+    "badge": null,
+    "image": "packages/size2.png"
+  },
+  {
+    "id": "pkg-2600",
+    "name": "2600 Rubies",
+    "rubies": 2600,
+    "price": 25,
+    "originalPrice": null,
+    "badge": "Popular",
+    "image": "packages/size3.png"
+  },
+  {
+    "id": "pkg-5000",
+    "name": "5000 Rubies",
+    "rubies": 5000,
+    "price": 47,
+    "originalPrice": null,
+    "badge": null,
+    "image": "packages/size4.png"
+  },
+  {
+    "id": "pkg-9000",
+    "name": "9000 Rubies",
+    "rubies": 9000,
+    "price": 80,
+    "originalPrice": null,
+    "badge": "Best Value",
+    "image": "packages/size5.png"
+  },
+  {
+    "id": "pkg-12000",
+    "name": "12000 Rubies",
+    "rubies": 12000,
+    "price": 93.75,
+    "originalPrice": null,
+    "badge": "Best Value",
+    "image": "packages/size6.png"
+  }
+]

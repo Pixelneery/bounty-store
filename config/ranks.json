@@ -1,0 +1,82 @@
+[
+  {
+    "id": "rank-scavenger",
+    "name": "Scavenger",
+    "ingamePrice": 500,
+    "perks": [
+      "Perk slot 1",
+      "Perk slot 2",
+      "Perk slot 3"
+    ]
+  },
+  {
+    "id": "rank-prospector",
+    "name": "Prospector",
+    "ingamePrice": 1000,
+    "perks": [
+      "Perk slot 1",
+      "Perk slot 2",
+      "Perk slot 3"
+    ]
+  },
+  {
+    "id": "rank-looter",
+    "name": "Looter",
+    "ingamePrice": 1500,
+    "perks": [
+      "Perk slot 1",
+      "Perk slot 2",
+      "Perk slot 3"
+    ]
+  },
+  {
+    "id": "rank-kingpin",
+    "name": "Kingpin",
+    "ingamePrice": 2500,
+    "perks": [
+      "Perk slot 1",
+      "Perk slot 2",
+      "Perk slot 3"
+    ]
+  },
+  {
+    "id": "rank-warlord",
+    "name": "Warlord",
+    "ingamePrice": 3500,
+    "perks": [
+      "Perk slot 1",
+      "Perk slot 2",
+      "Perk slot 3"
+    ]
+  },
+  {
+    "id": "rank-baron",
+    "name": "Baron",
+    "ingamePrice": 5000,
+    "perks": [
+      "Perk slot 1",
+      "Perk slot 2",
+      "Perk slot 3"
+    ]
+  },
+  {
+    "id": "rank-hunter",
+    "name": "Hunter",
+    "ingamePrice": 7500,
+    "perks": [
+      "Perk slot 1",
+      "Perk slot 2",
+      "Perk slot 3"
+    ]
+  },
+  {
+    "id": "rank-custom",
+    "name": "Custom",
+    "ingamePrice": 11000,
+    "perks": [
+      "Perk slot 1",
+      "Perk slot 2",
+      "Perk slot 3"
+    ]
+  }
+]
