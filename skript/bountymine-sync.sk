@@ -1,5 +1,5 @@
-# TacoRealms store sync
-# Edit the two options below, then `/skript reload tacorealms-sync`.
+# BountyMine store sync
+# Edit the two options below, then `/skript reload bountymine-sync`.
 # sync-token must match SYNC_TOKEN on the Heroku app.
 #
 # The web app queues delivery commands in Postgres and this script pulls them:
@@ -12,7 +12,7 @@
 # console command. If your Skript version rejects it, use
 # `execute command "%{_cmd}%" by console` instead.
 options:
-	base-url: https://store.tacogenzz.com
+	base-url: https://mc-store-b216cbdae28a.herokuapp.com
 	sync-token: replace-with-sync-token
 
 import:
@@ -23,7 +23,7 @@ import:
 	java.io.OutputStreamWriter
 
 # Returns the response body with lines joined by ";;" (empty on non-200).
-function tacorealms_http_get(path: text) :: text:
+function bountymine_http_get(path: text) :: text:
 	set {_urlObj} to new URL("%{@base-url}%%{_path}%")
 	set {_conn} to {_urlObj}.openConnection()
 	{_conn}.setRequestMethod("GET")
@@ -32,7 +32,7 @@ function tacorealms_http_get(path: text) :: text:
 	{_conn}.setRequestProperty("Authorization", "Bearer %{@sync-token}%")
 	set {_code} to {_conn}.getResponseCode()
 	if {_code} is not 200:
-		broadcast "&c[TacoRealms Sync] GET %{_path}% failed with HTTP %{_code}%." to console
+		broadcast "&c[BountyMine Sync] GET %{_path}% failed with HTTP %{_code}%." to console
 		return ""
 	set {_stream} to {_conn}.getInputStream()
 	set {_isr} to new InputStreamReader({_stream})
@@ -49,7 +49,7 @@ function tacorealms_http_get(path: text) :: text:
 	return {_result}
 
 # POSTs a plain-text body ("1,2,3") to /api/mc/ack. Returns the body or "".
-function tacorealms_http_post(path: text, body: text) :: text:
+function bountymine_http_post(path: text, body: text) :: text:
 	set {_urlObj} to new URL("%{@base-url}%%{_path}%")
 	set {_conn} to {_urlObj}.openConnection()
 	{_conn}.setRequestMethod("POST")
@@ -65,7 +65,7 @@ function tacorealms_http_post(path: text, body: text) :: text:
 	{_writer}.close()
 	set {_code} to {_conn}.getResponseCode()
 	if {_code} is not 200:
-		broadcast "&c[TacoRealms Sync] POST %{_path}% failed with HTTP %{_code}%." to console
+		broadcast "&c[BountyMine Sync] POST %{_path}% failed with HTTP %{_code}%." to console
 		return ""
 	set {_stream} to {_conn}.getInputStream()
 	set {_isr} to new InputStreamReader({_stream})
@@ -75,7 +75,7 @@ function tacorealms_http_post(path: text, body: text) :: text:
 	return {_result}
 
 every 10 seconds:
-	set {_raw} to tacorealms_http_get("/api/mc/pending")
+	set {_raw} to bountymine_http_get("/api/mc/pending")
 	if {_raw} is "":
 		stop
 
@@ -93,28 +93,28 @@ every 10 seconds:
 				set {_ids} to "%{_ids}%,%{_id}%"
 
 	if {_ids} is not "":
-		set {_ack} to tacorealms_http_post("/api/mc/ack", {_ids})
+		set {_ack} to bountymine_http_post("/api/mc/ack", {_ids})
 
 every 60 seconds:
-	set {_goalRaw} to tacorealms_http_get("/api/mc/goal")
+	set {_goalRaw} to bountymine_http_get("/api/mc/goal")
 	if {_goalRaw} is "":
-		broadcast "&c[TacoRealms Sync] Failed to fetch goal data." to console
+		broadcast "&c[BountyMine Sync] Failed to fetch goal data." to console
 	else:
 		# current cents | target cents | reached (1/0)
 		set {_goal::*} to {_goalRaw} split at "|"
-		set {tacorealms::goal::current} to {_goal::1}
-		set {tacorealms::goal::target} to {_goal::2}
-		set {tacorealms::goal::reached} to {_goal::3}
+		set {bountymine::goal::current} to {_goal::1}
+		set {bountymine::goal::target} to {_goal::2}
+		set {bountymine::goal::reached} to {_goal::3}
 
-	set {_lbRaw} to tacorealms_http_get("/api/mc/leaderboard")
+	set {_lbRaw} to bountymine_http_get("/api/mc/leaderboard")
 	if {_lbRaw} is "":
-		broadcast "&c[TacoRealms Sync] Failed to fetch leaderboard data." to console
+		broadcast "&c[BountyMine Sync] Failed to fetch leaderboard data." to console
 	else:
-		delete {tacorealms::leaderboard::*}
+		delete {bountymine::leaderboard::*}
 		set {_i} to 0
 		loop {_lbRaw} split at ";;":
 			if loop-value contains "|":
 				add 1 to {_i}
 				set {_row::*} to loop-value split at "|"
-				set {tacorealms::leaderboard::%{_i}%::name} to {_row::1}
-				set {tacorealms::leaderboard::%{_i}%::total} to {_row::2}
+				set {bountymine::leaderboard::%{_i}%::name} to {_row::1}
+				set {bountymine::leaderboard::%{_i}%::total} to {_row::2}

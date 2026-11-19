@@ -18,7 +18,7 @@ heroku login
 ## 2. Create the app and the database
 
 ```bash
-heroku create tacorealms-store
+heroku create bountymine-store
 heroku ps:type web=basic
 heroku addons:create heroku-postgresql:essential-0
 ```
@@ -116,7 +116,7 @@ duplicate delivery commands or double-count the goal.
 
 ## 7. Minecraft server sync
 
-Set `SYNC_TOKEN` to the same value in `skript/tacorealms-sync.sk` (the `options:`
+Set `SYNC_TOKEN` to the same value in `skript/bountymine-sync.sk` (the `options:`
 block at the top) and set `base-url` to the public store URL. The script polls:
 
 - `/api/mc/pending` every 10 seconds, runs each command from console, then

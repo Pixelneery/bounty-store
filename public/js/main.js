@@ -620,7 +620,6 @@
 
     document.getElementById("brandLink").addEventListener("click", () => showView("home"));
     document.getElementById("browseStoreBtn").addEventListener("click", () => showView("packages"));
-    document.getElementById("footerBasketBtn").addEventListener("click", openDrawer);
 
     document.getElementById("basketBtn").addEventListener("click", openDrawer);
     document.getElementById("closeDrawer").addEventListener("click", closeDrawer);

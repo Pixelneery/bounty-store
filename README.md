@@ -25,7 +25,7 @@ mc-store/
 │   ├── mc.js            ← /api/mc/* endpoints for the Minecraft server
 │   └── payments/        ← stripe.js
 ├── public/               ← storefront and /admin UI (served statically)
-├── skript/              ← tacorealms-sync.sk (polls this app)
+├── skript/              ← bountymine-sync.sk (polls this app)
 ├── app.js               ← Express app
 ├── server.js            ← entry point (initializes Postgres, listens)
 ├── reset-goal.js        ← heroku run node reset-goal.js
