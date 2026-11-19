@@ -14,6 +14,47 @@
   const BOX_ICON = `<svg class="icon" aria-hidden="true"><use href="#i-box"/></svg>`;
   const STAR_ICON = `<svg class="icon" aria-hidden="true"><use href="#i-star"/></svg>`;
 
+  const prefersReducedMotion =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const revealObserver =
+    !prefersReducedMotion && "IntersectionObserver" in window
+      ? new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const el = entry.target;
+              el.classList.add("is-visible");
+              revealObserver.unobserve(el);
+              // Hand transitions back to the component styles once revealed so
+              // hover lifts keep their own timing.
+              el.addEventListener(
+                "transitionend",
+                () => {
+                  el.classList.remove("reveal", "is-visible");
+                  el.style.removeProperty("--reveal-delay");
+                },
+                { once: true }
+              );
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+        )
+      : null;
+
+  function reveal(targets) {
+    if (prefersReducedMotion || !targets) return;
+    const list =
+      typeof targets === "string" ? document.querySelectorAll(targets) : Array.from(targets);
+    list.forEach((el, index) => {
+      if (!el || el.classList.contains("reveal")) return;
+      el.style.setProperty("--reveal-delay", `${Math.min(index, 8) * 60}ms`);
+      el.classList.add("reveal");
+      if (revealObserver) revealObserver.observe(el);
+      else el.classList.add("is-visible");
+    });
+  }
+
   function spawnEmbers() {
     const container = document.getElementById("embers");
     if (!container) return;
@@ -199,6 +240,7 @@
       grid.appendChild(card);
     });
     bindCatalogGrid(grid);
+    reveal(grid.querySelectorAll(".card"));
   }
 
   function renderRanks() {
@@ -214,7 +256,7 @@
       card.setAttribute("aria-label", `View ${r.name} perks`);
       card.innerHTML = `
         <div class="card__top">
-          <span class="mono">Guild rank</span>
+          <span class="mono">Server rank</span>
           <span class="tag">Tier ${String(index + 1).padStart(2, "0")}</span>
         </div>
         <div class="card__icon">${STAR_ICON}</div>
@@ -232,6 +274,7 @@
       grid.appendChild(card);
     });
     bindCatalogGrid(grid);
+    reveal(grid.querySelectorAll(".card"));
   }
 
   function renderCrates() {
@@ -262,6 +305,7 @@
       grid.appendChild(card);
     });
     bindCatalogGrid(grid);
+    reveal(grid.querySelectorAll(".card"));
   }
 
   function renderLeaderboard(entries) {
@@ -282,6 +326,7 @@
       </div>`
       )
       .join("");
+    reveal(list.querySelectorAll(".leaderboard-row"));
   }
 
   function renderFaq(container, items) {
@@ -311,6 +356,8 @@
         answer.style.maxHeight = isOpen ? `${answer.scrollHeight}px` : "0px";
       });
     });
+
+    reveal(container.querySelectorAll(".faq-item"));
   }
 
   function addToBasket(id) {
@@ -338,14 +385,23 @@
     return basketItems().reduce((sum, i) => sum + i.product.price * i.quantity, 0);
   }
 
+  let lastBasketCount = 0;
+
   function renderBasket() {
     const count = basketItems().reduce((sum, i) => sum + i.quantity, 0);
-    document.getElementById("basketCount").textContent = count;
+    const badge = document.getElementById("basketCount");
+    badge.textContent = count;
+    if (count !== lastBasketCount) {
+      lastBasketCount = count;
+      badge.classList.remove("is-bumped");
+      void badge.offsetWidth;
+      badge.classList.add("is-bumped");
+    }
 
     const list = document.getElementById("drawerItems");
     const items = basketItems();
     if (items.length === 0) {
-      list.innerHTML = `<div class="empty-basket">Your basket is empty. Add a contract to get started.</div>`;
+      list.innerHTML = `<div class="empty-basket">Your basket is empty. Browse the store to get started.</div>`;
     } else {
       list.innerHTML = items
         .map(
@@ -405,7 +461,7 @@
     const isRank = type === "rank";
     const perks = Array.isArray(item.perks) ? item.perks : [];
 
-    document.getElementById("detailKicker").textContent = isRank ? "Guild rank" : "Crate key";
+    document.getElementById("detailKicker").textContent = isRank ? "Server rank" : "Crate key";
     document.getElementById("detailTitle").textContent = item.name;
     document.getElementById("detailPerks").innerHTML = perks.length
       ? perks.map((perk) => `<li>${perk}</li>`).join("")
@@ -477,10 +533,6 @@
   function checkoutItems() {
     return basketItems().map((i) => ({
       id: i.product.id,
-      name: i.product.name,
-      price: i.product.price,
-      rubies: i.product.rubies,
-      command: i.product.command,
       quantity: i.quantity,
     }));
   }
@@ -550,6 +602,12 @@
     initHeader();
     initMobileNav();
     loadData();
+
+    reveal(
+      document.querySelectorAll(
+        ".section-head, .dossier__intro, .wanted-poster, .contract-card, .faq-intro, .page-hero .container > *"
+      )
+    );
 
     const initialView = new URLSearchParams(window.location.search).get("view");
     if (["home", "packages", "ranks", "crates"].includes(initialView)) {

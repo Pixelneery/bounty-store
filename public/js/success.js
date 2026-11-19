@@ -31,7 +31,7 @@
       const order = await resp.json();
       detailsEl.textContent = `Order #${order.id.slice(0, 8)} · Status: ${order.status}`;
       if (order.status === "fulfilled") {
-        msgEl.textContent = "Your rubies have been delivered. Enjoy the hunt.";
+        msgEl.textContent = "Your rubies have been delivered. Enjoy the game.";
       } else if (order.status === "paid") {
         msgEl.textContent = "Payment confirmed. Delivering your rubies now.";
       }

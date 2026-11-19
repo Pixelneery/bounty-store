@@ -4,10 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>BountyMine | Ruby Store</title>
-<meta name="description" content="BountyMine ruby store. Pick a contract, pay your due, and receive your rubies in-game." />
+<meta name="description" content="The official BountyMine ruby store. Buy rubies, ranks and crate keys, pay securely with Stripe, and get them delivered in-game automatically." />
 <meta name="theme-color" content="#0a0705" />
 <meta property="og:title" content="BountyMine | Ruby Store" />
-<meta property="og:description" content="Bounties posted. Rubies ready. Pick your contract and pay your due." />
+<meta property="og:description" content="Buy rubies, ranks and crate keys. Delivered in-game in minutes." />
 <meta property="og:image" content="/img/banner.png" />
 <meta property="og:type" content="website" />
 <link rel="icon" type="image/png" sizes="128x128" href="/img/favicon.png" />
@@ -50,7 +50,7 @@
       <button class="nav__link" type="button" data-view="packages">Store</button>
       <button class="nav__link" type="button" data-view="ranks">Ranks</button>
       <button class="nav__link" type="button" data-view="crates">Crates</button>
-      <a class="nav__link" id="navDiscordLink" href="#" target="_blank" rel="noopener">Guild</a>
+      <a class="nav__link" id="navDiscordLink" href="#" target="_blank" rel="noopener">Discord</a>
     </nav>
 
     <div class="header__actions">
@@ -85,7 +85,7 @@
     <div class="mobile-nav__actions">
       <a class="btn btn--secondary btn--block" id="mobileDiscordLink" href="#" target="_blank" rel="noopener">
         <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
-        Join the guild
+        Join our Discord
       </a>
       <button class="btn btn--primary btn--block" type="button" data-view="packages">View store</button>
     </div>
@@ -101,24 +101,24 @@
         <div class="hero__copy">
           <div class="eyebrow">
             <span class="pulse-dot" aria-hidden="true"></span>
-            The guild store
+            Official ruby store
           </div>
 
           <h1>
-            <span>Claim your bounty.</span>
-            <span>Stock your armory.</span>
+            <span>Rubies in minutes.</span>
+            <span>Back in the game.</span>
           </h1>
 
-          <p class="hero__lede" id="tagline">Bounties posted. Rubies ready. Pick your contract and pay your due.</p>
+          <p class="hero__lede" id="tagline">The official BountyMine store. Pick a package, pay securely, and your rubies arrive in-game automatically.</p>
 
           <div class="hero__actions">
             <button class="btn btn--primary" id="browseStoreBtn" type="button">
-              View contracts
+              Shop rubies
               <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
             </button>
             <a class="btn btn--secondary" id="discordLink" href="#" target="_blank" rel="noopener">
               <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
-              Join the guild
+              Join our Discord
               <span class="discord-count"><span class="discord-dot"></span><span id="discordCount">—</span></span>
             </a>
           </div>
@@ -146,16 +146,16 @@
       <div class="container">
         <div class="dossier">
           <div class="dossier__intro">
-            <div class="eyebrow">Hunter dossier</div>
-            <h2>Mark your name.</h2>
+            <div class="eyebrow">Player lookup</div>
+            <h2>Add your username.</h2>
             <p>
-              Enter your Minecraft username to pin your face to the bounty board. Delivery uses
-              the exact name you enter, so check the spelling before you check out.
+              Type your Minecraft username and we'll load your skin. We deliver to the exact
+              name you enter, so double-check the spelling before you check out.
             </p>
             <ul class="dossier__notes">
-              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> No account signup</li>
-              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Rubies land in-game</li>
-              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Gift a fellow hunter</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> No account needed</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Delivered in-game</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Gift a friend</li>
             </ul>
           </div>
 
@@ -166,9 +166,9 @@
               <span class="wanted-poster__nail wanted-poster__nail--bl"></span>
               <span class="wanted-poster__nail wanted-poster__nail--br"></span>
               <div class="wanted-poster__paper">
-                <span class="wanted-poster__kicker">BountyMine Guild · Public notice</span>
+                <span class="wanted-poster__kicker">BountyMine · Player card</span>
                 <h3 class="wanted-poster__title">Wanted</h3>
-                <p class="wanted-poster__subtitle">Dead or alive</p>
+                <p class="wanted-poster__subtitle">Most wanted on the server</p>
 
                 <div class="wanted-poster__portrait">
                   <img id="skinAvatar" alt="" hidden />
@@ -176,16 +176,16 @@
                 </div>
 
                 <label class="wanted-poster__field">
-                  <span>Name of the accused</span>
+                  <span>Minecraft username</span>
                   <input type="text" id="skinUsername" placeholder="Type your username" autocomplete="off" />
                 </label>
 
                 <div class="wanted-poster__reward">
-                  <span class="wanted-poster__reward-label">Reward</span>
+                  <span class="wanted-poster__reward-label">Bounty</span>
                   <strong><span id="bountyAmount">15,000</span> <span class="ruby-mark">♦</span></strong>
                 </div>
 
-                <p class="wanted-poster__fine">Payable in rubies on delivery · Last seen near the mines</p>
+                <p class="wanted-poster__fine">Delivered after checkout · Preview only</p>
                 <div class="wanted-poster__seal">BM</div>
               </div>
             </div>
@@ -198,35 +198,35 @@
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">The board</div>
-            <h2>Choose your contract.</h2>
-            <p>Three boards. One ledger. Every purchase is delivered automatically once payment confirms.</p>
+            <div class="eyebrow">Shop</div>
+            <h2>Shop by category.</h2>
+            <p>Three categories, one basket. Everything is delivered automatically once your payment confirms.</p>
           </div>
           <div class="section-head__side">
-            <span class="status-pill"><i></i> 03 open boards</span>
+            <span class="status-pill"><i></i> 3 categories</span>
           </div>
         </div>
 
         <div class="contract-grid">
           <button class="contract-card" id="categoryTile" type="button" data-no="01">
             <div class="contract-card__top">
-              <span class="mono">Contract 01</span>
-              <span class="tag">Rubies</span>
+              <span class="mono">01</span>
+              <span class="tag">Packages</span>
             </div>
             <div class="contract-card__icon">
               <svg class="icon" aria-hidden="true"><use href="#i-diamond"/></svg>
             </div>
             <h3>Ruby Packages</h3>
-            <p>Load your ledger with rubies. Six packages, from a small purse to a full war chest.</p>
+            <p>Six sizes, from a quick top-up to a full stockpile. Rubies are added to your account in-game.</p>
             <div class="contract-card__foot">
-              <span>Open board</span>
+              <span>Browse</span>
               <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
             </div>
           </button>
 
           <button class="contract-card" id="categoryTileRanks" type="button" data-no="02">
             <div class="contract-card__top">
-              <span class="mono">Contract 02</span>
+              <span class="mono">02</span>
               <span class="tag">In-game</span>
             </div>
             <div class="contract-card__icon">
@@ -235,23 +235,23 @@
             <h3>Ranks</h3>
             <p>Take a title and the perks that come with it. Ranks are bought in-game with rubies.</p>
             <div class="contract-card__foot">
-              <span>Open board</span>
+              <span>Browse</span>
               <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
             </div>
           </button>
 
           <button class="contract-card" id="categoryTileCrates" type="button" data-no="03">
             <div class="contract-card__top">
-              <span class="mono">Contract 03</span>
+              <span class="mono">03</span>
               <span class="tag">Crates</span>
             </div>
             <div class="contract-card__icon">
               <svg class="icon" aria-hidden="true"><use href="#i-box"/></svg>
             </div>
             <h3>Crates</h3>
-            <p>Keys for the vault. Buy a seat at the table and see what the Supreme crate holds.</p>
+            <p>Keys for the Supreme crate. Buy one and open it at the vault in-game.</p>
             <div class="contract-card__foot">
-              <span>Open board</span>
+              <span>Browse</span>
               <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
             </div>
           </button>
@@ -263,9 +263,9 @@
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="eyebrow">The ledger</div>
-            <h2>Top contributors.</h2>
-            <p>Hunters who have put the most into the guild purse.</p>
+            <div class="eyebrow">Leaderboard</div>
+            <h2>Top supporters.</h2>
+            <p>Players who have put the most into the server.</p>
           </div>
         </div>
         <div class="leaderboard" id="leaderboard"></div>
@@ -282,8 +282,8 @@
           <span>Rubies</span>
         </nav>
         <div class="eyebrow">Ruby packages</div>
-        <h1 class="page-title">Stock your ledger.</h1>
-        <p class="page-lede">Pick a ruby package and add it to your basket. Rubies are granted in-game within a minute of payment confirming.</p>
+        <h1 class="page-title">Buy rubies.</h1>
+        <p class="page-lede">Pick a package and add it to your basket. Rubies are granted in-game within a minute of your payment confirming.</p>
       </div>
     </div>
     <div class="container">
@@ -299,8 +299,8 @@
           <span>/</span>
           <span>Ranks</span>
         </nav>
-        <div class="eyebrow">Guild titles</div>
-        <h1 class="page-title">Take a rank.</h1>
+        <div class="eyebrow">Server ranks</div>
+        <h1 class="page-title">Choose a rank.</h1>
         <p class="page-lede">Ranks are purchased in-game with rubies. The prices below are in-game costs, not real money.</p>
       </div>
     </div>
@@ -318,7 +318,7 @@
           <span>/</span>
           <span>Crates</span>
         </nav>
-        <div class="eyebrow">The vault</div>
+        <div class="eyebrow">Crate keys</div>
         <h1 class="page-title">Buy a key.</h1>
         <p class="page-lede">Crate keys are delivered straight to your account. Open them in-game at the vault.</p>
       </div>
@@ -333,9 +333,9 @@
 <section class="section section--faq" id="storeFaqSection">
   <div class="container faq-grid">
     <div class="faq-intro">
-      <div class="eyebrow">Questions from the board</div>
+      <div class="eyebrow">FAQ</div>
       <h2>Straight answers.</h2>
-      <p>Still unsure about an order? Ask in the guild Discord before you file. We would rather answer a question than lose a good hunter.</p>
+      <p>Questions about an order? Ask in our Discord before you buy. We would rather answer a question than have you guess.</p>
       <a class="btn btn--secondary" id="faqDiscordLink" href="#" target="_blank" rel="noopener">
         <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
         Ask in Discord
@@ -364,7 +364,7 @@
     </div>
 
     <div class="footer__links">
-      <h3>The guild</h3>
+      <h3>Community</h3>
       <button type="button" id="footerBasketBtn">Basket</button>
       <a href="#" data-discord>Discord</a>
       <button type="button" data-view="home">Home</button>
@@ -381,7 +381,7 @@
 
   <div class="container footer__bottom">
     <p>© 2026 BountyMine. Not affiliated with Mojang Studios or Microsoft.</p>
-    <p class="footer__motto">Bounties posted. Rubies ready.</p>
+    <p class="footer__motto">Rubies delivered in minutes.</p>
   </div>
 </footer>
 
@@ -389,7 +389,7 @@
 <aside class="drawer" id="drawer" aria-label="Basket">
   <div class="drawer__header">
     <div>
-      <span class="eyebrow eyebrow--plain">The ledger</span>
+      <span class="eyebrow eyebrow--plain">Basket</span>
       <h2>Your basket</h2>
     </div>
     <button class="icon-btn" id="closeDrawer" type="button" aria-label="Close basket">
@@ -427,7 +427,7 @@
 
     <label class="field field--checkbox">
       <input type="checkbox" id="giftToggle" />
-      <span>This is a contract for someone else</span>
+      <span>This is a gift for someone else</span>
     </label>
 
     <label class="field" id="recipientField" hidden>

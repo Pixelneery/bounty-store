@@ -1,56 +1,76 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
 const Stripe = require("stripe");
-const { createOrder, markPaid, getOrder } = require("../../lib/orders");
-const { fulfillOrder } = require("../../lib/fulfill");
+const { normalizeCheckout, storeCurrency } = require("../../lib/catalog");
+const {
+  createOrder,
+  deletePendingOrder,
+  getOrder,
+  serializeOrder,
+  settleOrder,
+} = require("../../lib/orders");
 
 const router = express.Router();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY || "");
 
-function storeCurrency() {
-  const config = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "..", "..", "config", "store.json"), "utf8")
-  );
-  return (config.currency || "usd").toLowerCase();
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function baseUrl(req) {
+  const configured = process.env.BASE_URL || process.env.PUBLIC_BASE_URL;
+  if (configured) return configured.replace(/\/+$/, "");
+  return `${req.protocol}://${req.get("host")}`;
 }
 
-router.post("/create-session", express.json(), async (req, res) => {
+router.post("/create-session", express.json({ limit: "32kb" }), async (req, res) => {
+  let checkout;
   try {
-    const { items, playerName, recipientName } = req.body;
-    if (!Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ error: "Basket is empty" });
-    }
+    checkout = normalizeCheckout(req.body);
+  } catch (err) {
+    return res.status(err.status || 400).json({ error: err.message });
+  }
 
-    const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const currency = storeCurrency();
-    const order = createOrder({
-      items,
-      total,
+  const currency = storeCurrency();
+  let order;
+  try {
+    order = await createOrder({
+      lines: checkout.lines,
+      totalCents: checkout.totalCents,
       currency,
-      method: "card",
-      playerName,
-      recipientName,
+      buyerUsername: checkout.buyerUsername,
+      recipientUsername: checkout.recipientUsername,
     });
+  } catch (err) {
+    console.error("Could not store order:", err);
+    return res.status(500).json({ error: "Could not start checkout" });
+  }
 
+  try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      line_items: items.map((i) => ({
+      client_reference_id: order.id,
+      line_items: checkout.lines.map((line) => ({
         price_data: {
           currency,
-          product_data: { name: i.name },
-          unit_amount: Math.round(i.price * 100),
+          product_data: { name: line.name },
+          unit_amount: line.unitAmountCents,
         },
-        quantity: i.quantity,
+        quantity: line.quantity,
       })),
       metadata: { orderId: order.id },
-      success_url: `${process.env.PUBLIC_BASE_URL}/success.html?order=${order.id}`,
-      cancel_url: `${process.env.PUBLIC_BASE_URL}/?checkout=cancelled`,
+      success_url: `${baseUrl(req)}/success.html?order=${order.id}`,
+      cancel_url: `${baseUrl(req)}/?checkout=cancelled`,
     });
+
+    if (!session || !session.url) {
+      throw new Error("Stripe did not return a checkout URL");
+    }
 
     res.json({ url: session.url, orderId: order.id });
   } catch (err) {
     console.error("Stripe session error:", err);
+    await deletePendingOrder(order.id).catch((cleanupError) => {
+      console.error("Could not remove failed order:", cleanupError);
+    });
     res.status(500).json({ error: "Could not start Stripe checkout" });
   }
 });
@@ -59,39 +79,72 @@ router.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
+    const secret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!secret) {
+      console.error("STRIPE_WEBHOOK_SECRET is not configured");
+      return res.status(503).send("Webhook secret is not configured");
+    }
+
     let event;
     try {
       event = stripe.webhooks.constructEvent(
         req.body,
-        req.headers["stripe-signature"],
-        process.env.STRIPE_WEBHOOK_SECRET
+        req.get("stripe-signature") || "",
+        secret
       );
     } catch (err) {
       console.error("Stripe webhook signature invalid:", err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
-      const orderId = session.metadata.orderId;
-      const order = markPaid(orderId, { stripeSessionId: session.id });
-      if (order) {
-        try {
-          await fulfillOrder(order);
-        } catch (e) {
-          console.error("Fulfillment failed for order", orderId, e);
+    try {
+      if (event.type === "checkout.session.completed") {
+        const session = event.data.object;
+        const orderId = session.metadata && session.metadata.orderId;
+
+        if (!orderId) {
+          console.error(`Webhook ${event.id} has no orderId metadata`);
+        } else if (!UUID_PATTERN.test(orderId)) {
+          console.error(`Webhook ${event.id} has an invalid orderId: ${orderId}`);
+        } else if (session.payment_status !== "paid") {
+          console.log(`Webhook ${event.id} ignored: payment_status is ${session.payment_status}`);
+        } else {
+          const result = await settleOrder({
+            orderId,
+            stripeSessionId: session.id,
+            amountTotalCents: session.amount_total,
+          });
+          if (result.justPaid) {
+            console.log(
+              `Order ${orderId} paid; ${result.goalReachedNow ? "goal reached, " : ""}commands queued.`
+            );
+          } else {
+            console.log(`Webhook ${event.id} ignored: order ${orderId} was already processed.`);
+          }
         }
       }
-    }
 
-    res.json({ received: true });
+      res.json({ received: true });
+    } catch (err) {
+      console.error("Webhook processing failed:", err);
+      res.status(500).json({ error: "Webhook processing failed" });
+    }
   }
 );
 
-router.get("/order/:id", (req, res) => {
-  const order = getOrder(req.params.id);
-  if (!order) return res.status(404).json({ error: "Not found" });
-  res.json(order);
+router.get("/order/:id", async (req, res) => {
+  if (!UUID_PATTERN.test(req.params.id)) {
+    return res.status(404).json({ error: "Not found" });
+  }
+
+  try {
+    const order = await getOrder(req.params.id);
+    if (!order) return res.status(404).json({ error: "Not found" });
+    res.json(serializeOrder(order));
+  } catch (err) {
+    console.error("Could not load order:", err);
+    res.status(500).json({ error: "Could not load order" });
+  }
 });
 
 module.exports = router;

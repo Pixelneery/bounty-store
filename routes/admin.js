@@ -151,13 +151,24 @@ function buildProduct(body, id) {
   };
 }
 
-function buildRank(body, id) {
-  return {
+function buildRank(body, id, existing = {}) {
+  // Ranks are display-only unless they carry a USD price. Preserve an
+  // already-configured price/command so admin edits do not unsell a rank.
+  const rank = {
     id,
     name: text(body.name, "Name", 80),
     ingamePrice: integer(body.ingamePrice, "In-game price", { min: 0, max: 100000000 }),
     perks: perks(body.perks),
   };
+  const price = number(body.price ?? existing.price, "Price", {
+    min: 0,
+    max: 1000000,
+    required: false,
+  });
+  if (price !== null) rank.price = price;
+  const command = text(body.command ?? existing.command, "Command", 300, false);
+  if (command) rank.command = command;
+  return rank;
 }
 
 function buildCrate(body, id) {
@@ -263,7 +274,7 @@ router.put("/ranks/:id", requireAuth, express.json(), (req, res) => {
   const ranks = readJson("ranks.json", []);
   const index = ranks.findIndex((item) => item.id === req.params.id);
   if (index === -1) return res.status(404).json({ error: "Rank not found" });
-  ranks[index] = buildRank(req.body, req.params.id);
+  ranks[index] = buildRank(req.body, req.params.id, ranks[index]);
   writeJson("ranks.json", ranks);
   res.json(ranks[index]);
 });

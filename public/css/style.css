@@ -1404,7 +1404,7 @@ body.menu-open .menu-toggle span:nth-child(3) {
 
 .contract-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -2597,6 +2597,153 @@ body.menu-open .menu-toggle span:nth-child(3) {
   overflow: hidden;
 }
 
+/* ---------- motion ---------- */
+
+.hero__copy > .eyebrow,
+.hero__copy > h1,
+.hero__copy > .hero__lede,
+.hero__copy > .hero__actions,
+.hero__copy > .hero__meta {
+  animation: hero-rise 0.72s var(--ease-out) both;
+}
+
+.hero__copy > h1 {
+  animation-delay: 0.06s;
+}
+
+.hero__copy > .hero__lede {
+  animation-delay: 0.12s;
+}
+
+.hero__copy > .hero__actions {
+  animation-delay: 0.18s;
+}
+
+.hero__copy > .hero__meta {
+  animation-delay: 0.24s;
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.basket-count.is-bumped {
+  animation: basket-bump 0.42s var(--ease-out);
+}
+
+@keyframes basket-bump {
+  0% {
+    transform: scale(1);
+  }
+  38% {
+    transform: scale(1.32);
+  }
+  70% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.drawer.open .drawer-item {
+  animation: drawer-item-in 0.4s var(--ease-out) both;
+}
+
+.drawer.open .drawer-item:nth-child(2) {
+  animation-delay: 0.04s;
+}
+
+.drawer.open .drawer-item:nth-child(3) {
+  animation-delay: 0.08s;
+}
+
+.drawer.open .drawer-item:nth-child(4) {
+  animation-delay: 0.12s;
+}
+
+.drawer.open .drawer-item:nth-child(5) {
+  animation-delay: 0.16s;
+}
+
+@keyframes drawer-item-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.modal.open .modal__body {
+  animation: modal-body-in 0.32s var(--ease-out) both;
+}
+
+@keyframes modal-body-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.modal.open .detail-perks li {
+  animation: perk-in 0.34s var(--ease-out) both;
+}
+
+.modal.open .detail-perks li:nth-child(2) {
+  animation-delay: 0.04s;
+}
+
+.modal.open .detail-perks li:nth-child(3) {
+  animation-delay: 0.08s;
+}
+
+.modal.open .detail-perks li:nth-child(4) {
+  animation-delay: 0.12s;
+}
+
+.modal.open .detail-perks li:nth-child(5) {
+  animation-delay: 0.16s;
+}
+
+@keyframes perk-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (max-width: 1080px) {
   .nav {
     gap: 0;
@@ -2874,6 +3021,11 @@ body.menu-open .menu-toggle span:nth-child(3) {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 
   .ambient {

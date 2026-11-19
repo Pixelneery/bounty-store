@@ -1,10 +1,10 @@
 {
   "storeName": "BountyMine",
-  "tagline": "Bounties posted. Rubies ready. Pick your contract and pay your due.",
+  "tagline": "The official BountyMine store. Pick a package, pay securely, and your rubies arrive in-game automatically.",
   "currency": "USD",
   "currencySymbol": "$",
   "supportUrl": "https://discord.gg/Zr64tFhvMn",
-  "discordGuildId": "1562969823745544306",
+  "discordGuildId": "",
   "discordMemberFallback": 31,
   "paymentMethods": ["card"],
   "taxRatePercent": 0,
